@@ -1,5 +1,6 @@
 import React from 'react';
 import { format, addDays, startOfWeek } from 'date-fns';
+import { useAuthStore } from '../../store/authStore';
 import type { Lecture } from '../../types';
 
 interface WeekViewProps {
@@ -13,6 +14,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
                                                     lectures,
                                                     onSelectLecture,
                                                   }) => {
+  const user = useAuthStore((state) => state.user);
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   const timeSlots = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 7 PM
@@ -20,6 +22,19 @@ export const WeekView: React.FC<WeekViewProps> = ({
   const getTimeInMinutes = (time: string) => {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
+  };
+
+  const isEnrolled = (lecture: Lecture) => {
+    return lecture.students.some(student => student.id === user?.id);
+  };
+
+  const getLectureColors = (lecture: Lecture) => {
+    if (user?.role !== 'student') {
+      return 'bg-indigo-100 dark:bg-indigo-900 hover:bg-indigo-200 dark:hover:bg-indigo-800';
+    }
+    return isEnrolled(lecture)
+        ? 'bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800'
+        : 'bg-indigo-100 dark:bg-indigo-900 hover:bg-indigo-200 dark:hover:bg-indigo-800';
   };
 
   const calculateLectureStyle = (lecture: Lecture, dayLectures: Lecture[]) => {
@@ -98,7 +113,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
                         <button
                             key={lecture.id}
                             onClick={() => onSelectLecture(lecture)}
-                            className="absolute p-1 text-xs bg-indigo-100 dark:bg-indigo-900 rounded hover:bg-indigo-200 dark:hover:bg-indigo-800 overflow-hidden transition-colors"
+                            className={`absolute p-1 text-xs rounded overflow-hidden transition-colors ${getLectureColors(lecture)}`}
                             style={calculateLectureStyle(lecture, dayLectures)}
                         >
                           <div className="font-medium truncate">{lecture.title}</div>

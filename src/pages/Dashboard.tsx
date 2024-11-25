@@ -62,6 +62,10 @@ export const Dashboard: React.FC = () => {
     }
   };
 
+  const isEnrolled = (lecture: Lecture) => {
+    return lecture.students.some(student => student.id === user?.id);
+  };
+
   if (isLoading) {
     return (
         <div className="flex items-center justify-center min-h-screen">
@@ -91,7 +95,7 @@ export const Dashboard: React.FC = () => {
                 onEnroll={handleEnroll}
                 onUnenroll={handleUnenroll}
                 isStudent={user?.role === 'student'}
-                isEnrolled={selectedLecture.enrolledStudents.includes(user?.id || '')}
+                isEnrolled={isEnrolled(selectedLecture)}
                 isLoading={enrollMutation.isPending || unenrollMutation.isPending}
             />
         )}

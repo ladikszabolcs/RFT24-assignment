@@ -13,10 +13,12 @@ export default {
     },
     auth: {
       signIn: 'Logi sisse oma kontosse',
+      username: 'Kasutajanimi',
       email: 'E-posti aadress',
       password: 'Parool',
       signInButton: 'Logi sisse',
       logout: 'Logi välja',
+      invalidCredentials: 'Vale kasutajanimi või parool',
     },
     nav: {
       dashboard: 'Töölaud',
@@ -26,8 +28,9 @@ export default {
     users: {
       title: 'Kasutajate haldamine',
       createUser: 'Loo kasutaja',
-      name: 'Nimi',
+      username: 'Kasutajanimi',
       email: 'E-post',
+      password: 'Parool',
       role: 'Roll',
       actions: 'Tegevused',
       roles: {
@@ -35,6 +38,12 @@ export default {
         teacher: 'Õpetaja',
         student: 'Õpilane',
       },
+      createSuccess: 'Kasutaja edukalt loodud',
+      updateSuccess: 'Kasutaja edukalt uuendatud',
+      deleteSuccess: 'Kasutaja edukalt kustutatud',
+      createError: 'Kasutaja loomine ebaõnnestus',
+      updateError: 'Kasutaja uuendamine ebaõnnestus',
+      deleteError: 'Kasutaja kustutamine ebaõnnestus',
     },
     lectures: {
       title: 'Loengute haldamine',
@@ -48,6 +57,11 @@ export default {
       maxStudents: 'Maksimaalne õpilaste arv',
       enrolled: 'Registreerunud',
       days: {
+        1: 'Esmaspäev',
+        2: 'Teisipäev',
+        3: 'Kolmapäev',
+        4: 'Neljapäev',
+        5: 'Reede',
         monday: 'Esmaspäev',
         tuesday: 'Teisipäev',
         wednesday: 'Kolmapäev',
@@ -56,6 +70,12 @@ export default {
       },
       enroll: 'Registreeru',
       unenroll: 'Tühista registreering',
+      createSuccess: 'Loeng edukalt loodud',
+      updateSuccess: 'Loeng edukalt uuendatud',
+      deleteSuccess: 'Loeng edukalt kustutatud',
+      createError: 'Loengu loomine ebaõnnestus',
+      updateError: 'Loengu uuendamine ebaõnnestus',
+      deleteError: 'Loengu kustutamine ebaõnnestus',
     },
     calendar: {
       today: 'Täna',

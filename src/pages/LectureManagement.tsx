@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Clock, Users } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Lecture } from '../types';
 import { useAuthStore } from '../store/authStore';
 import { lecturesApi } from '../api/lectures';
 import { LectureFormModal } from '../components/Lectures/LectureFormModal';
+import { Toast } from '../components/Toast';
 
 export const LectureManagement: React.FC = () => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [editingLecture, setEditingLecture] = useState<Lecture | null>(null);
+  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const user = useAuthStore((state) => state.user);
   const queryClient = useQueryClient();
 
@@ -24,6 +26,13 @@ export const LectureManagement: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lectures'] });
       setShowModal(false);
+      setMessage({ text: t('lectures.createSuccess'), type: 'success' });
+    },
+    onError: (error: any) => {
+      setMessage({
+        text: error.response?.data?.error || t('lectures.createError'),
+        type: 'error'
+      });
     },
   });
 
@@ -33,6 +42,13 @@ export const LectureManagement: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lectures'] });
       setShowModal(false);
+      setMessage({ text: t('lectures.updateSuccess'), type: 'success' });
+    },
+    onError: (error: any) => {
+      setMessage({
+        text: error.response?.data?.error || t('lectures.updateError'),
+        type: 'error'
+      });
     },
   });
 
@@ -40,6 +56,13 @@ export const LectureManagement: React.FC = () => {
     mutationFn: lecturesApi.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lectures'] });
+      setMessage({ text: t('lectures.deleteSuccess'), type: 'success' });
+    },
+    onError: (error: any) => {
+      setMessage({
+        text: error.response?.data?.error || t('lectures.deleteError'),
+        type: 'error'
+      });
     },
   });
 
@@ -48,7 +71,7 @@ export const LectureManagement: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleSubmit = async (data: Omit<Lecture, 'id' | 'enrolledStudents'>) => {
+  const handleSubmit = async (data: Omit<Lecture, 'id' | 'students'>) => {
     if (editingLecture) {
       await updateMutation.mutateAsync({
         id: editingLecture.id,
@@ -60,7 +83,11 @@ export const LectureManagement: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="p-4">{t('common.loading')}</div>;
+    return (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-lg">{t('common.loading')}</div>
+        </div>
+    );
   }
 
   return (
@@ -83,7 +110,7 @@ export const LectureManagement: React.FC = () => {
                   className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4"
               >
                 <h3 className="text-lg font-semibold mb-2">{lecture.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
                   {lecture.description}
                 </p>
                 <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
@@ -92,7 +119,7 @@ export const LectureManagement: React.FC = () => {
                 {lecture.endTime}
               </span>
                   <span>
-                {lecture.enrolledStudents.length}/{lecture.maxStudents}
+                {lecture.students.length}/{lecture.maxStudents}
               </span>
                 </div>
                 <div className="mt-4 flex justify-end space-x-2">
@@ -108,6 +135,7 @@ export const LectureManagement: React.FC = () => {
                   <button
                       onClick={() => deleteMutation.mutate(lecture.id)}
                       className="btn-secondary text-red-600 hover:text-red-700"
+                      disabled={deleteMutation.isPending}
                   >
                     {t('common.delete')}
                   </button>
@@ -123,6 +151,14 @@ export const LectureManagement: React.FC = () => {
                 onClose={() => setShowModal(false)}
                 onSubmit={handleSubmit}
                 isSubmitting={createMutation.isPending || updateMutation.isPending}
+            />
+        )}
+
+        {message && (
+            <Toast
+                message={message.text}
+                type={message.type}
+                onClose={() => setMessage(null)}
             />
         )}
       </div>

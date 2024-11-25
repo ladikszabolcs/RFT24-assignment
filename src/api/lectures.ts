@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { Lecture } from '../types';
+import type { Lecture, User } from '../types';
 
 interface CreateLectureDTO {
     title: string;
@@ -13,7 +13,7 @@ interface CreateLectureDTO {
 
 interface LectureResponse {
     id: number;
-    students: string[];
+    students: User[];
     title: string;
     description: string;
     day_of_week: string;
@@ -27,7 +27,7 @@ interface EnrollmentResponse {
     message: string;
 }
 
-const transformToApi = (data: Omit<Lecture, 'id' | 'enrolledStudents'>): CreateLectureDTO => ({
+const transformToApi = (data: Omit<Lecture, 'id' | 'students'>): CreateLectureDTO => ({
     title: data.title,
     description: data.description,
     day_of_week: data.dayOfWeek,
@@ -46,7 +46,7 @@ const transformResponse = (lecture: LectureResponse): Lecture => ({
     startTime: lecture.start_time.substring(0, 5), // Remove seconds from time
     endTime: lecture.end_time.substring(0, 5), // Remove seconds from time
     teacher: lecture.teacher.toString(),
-    enrolledStudents: lecture.students,
+    students: lecture.students,
 });
 
 export const lecturesApi = {
@@ -60,14 +60,14 @@ export const lecturesApi = {
         return transformResponse(data);
     },
 
-    create: async (lecture: Omit<Lecture, 'id' | 'enrolledStudents'>): Promise<Lecture> => {
+    create: async (lecture: Omit<Lecture, 'id' | 'students'>): Promise<Lecture> => {
         const apiData = transformToApi(lecture);
         const { data } = await apiClient.post<LectureResponse>('/api/lectures/', apiData);
         return transformResponse(data);
     },
 
     update: async (id: string, lecture: Partial<Lecture>): Promise<Lecture> => {
-        const apiData = transformToApi(lecture as Omit<Lecture, 'id' | 'enrolledStudents'>);
+        const apiData = transformToApi(lecture as Omit<Lecture, 'id' | 'students'>);
         const { data } = await apiClient.patch<LectureResponse>(`/api/lectures/${id}/`, apiData);
         return transformResponse(data);
     },

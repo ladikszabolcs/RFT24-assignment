@@ -13,10 +13,12 @@ export default {
     },
     auth: {
       signIn: 'Jelentkezzen be fiókjába',
+      username: 'Felhasználónév',
       email: 'Email cím',
       password: 'Jelszó',
       signInButton: 'Bejelentkezés',
       logout: 'Kijelentkezés',
+      invalidCredentials: 'Érvénytelen felhasználónév vagy jelszó',
     },
     nav: {
       dashboard: 'Irányítópult',
@@ -26,8 +28,9 @@ export default {
     users: {
       title: 'Felhasználók kezelése',
       createUser: 'Felhasználó létrehozása',
-      name: 'Név',
+      username: 'Felhasználónév',
       email: 'Email',
+      password: 'Jelszó',
       role: 'Szerepkör',
       actions: 'Műveletek',
       roles: {
@@ -35,6 +38,12 @@ export default {
         teacher: 'Tanár',
         student: 'Diák',
       },
+      createSuccess: 'Felhasználó sikeresen létrehozva',
+      updateSuccess: 'Felhasználó sikeresen frissítve',
+      deleteSuccess: 'Felhasználó sikeresen törölve',
+      createError: 'Nem sikerült létrehozni a felhasználót',
+      updateError: 'Nem sikerült frissíteni a felhasználót',
+      deleteError: 'Nem sikerült törölni a felhasználót',
     },
     lectures: {
       title: 'Előadások kezelése',
@@ -48,6 +57,11 @@ export default {
       maxStudents: 'Maximum létszám',
       enrolled: 'Beiratkozott',
       days: {
+        1: 'Hétfő',
+        2: 'Kedd',
+        3: 'Szerda',
+        4: 'Csütörtök',
+        5: 'Péntek',
         monday: 'Hétfő',
         tuesday: 'Kedd',
         wednesday: 'Szerda',
@@ -56,6 +70,12 @@ export default {
       },
       enroll: 'Beiratkozás',
       unenroll: 'Kiiratkozás',
+      createSuccess: 'Előadás sikeresen létrehozva',
+      updateSuccess: 'Előadás sikeresen frissítve',
+      deleteSuccess: 'Előadás sikeresen törölve',
+      createError: 'Nem sikerült létrehozni az előadást',
+      updateError: 'Nem sikerült frissíteni az előadást',
+      deleteError: 'Nem sikerült törölni az előadást',
     },
     calendar: {
       today: 'Ma',
