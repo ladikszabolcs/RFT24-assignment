@@ -23,6 +23,10 @@ interface LectureResponse {
     teacher: number;
 }
 
+interface EnrollmentResponse {
+    message: string;
+}
+
 const transformToApi = (data: Omit<Lecture, 'id' | 'enrolledStudents'>): CreateLectureDTO => ({
     title: data.title,
     description: data.description,
@@ -72,11 +76,13 @@ export const lecturesApi = {
         await apiClient.delete(`/api/lectures/${id}/`);
     },
 
-    enroll: async (id: string): Promise<void> => {
-        await apiClient.post(`/api/lectures/${id}/enroll/`);
+    enroll: async (id: string): Promise<EnrollmentResponse> => {
+        const { data } = await apiClient.post<EnrollmentResponse>(`/api/lectures/${id}/enroll/`);
+        return data;
     },
 
-    unenroll: async (id: string): Promise<void> => {
-        await apiClient.post(`/api/lectures/${id}/unenroll/`);
+    unenroll: async (id: string): Promise<EnrollmentResponse> => {
+        const { data } = await apiClient.post<EnrollmentResponse>(`/api/lectures/${id}/unenroll/`);
+        return data;
     },
 };

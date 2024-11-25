@@ -8,11 +8,13 @@ import { LectureModal } from '../components/Lectures/LectureModal';
 import { lecturesApi } from '../api/lectures';
 import { useAuthStore } from '../store/authStore';
 import type { Lecture } from '../types';
+import { Toast } from '../components/Toast';
 
 export const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null);
+  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const user = useAuthStore((state) => state.user);
   const queryClient = useQueryClient();
 
@@ -23,15 +25,25 @@ export const Dashboard: React.FC = () => {
 
   const enrollMutation = useMutation({
     mutationFn: lecturesApi.enroll,
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['lectures'] });
+      setMessage({ text: response.message, type: 'success' });
+      setSelectedLecture(null);
+    },
+    onError: (error: any) => {
+      setMessage({ text: error.response?.data?.error || 'Failed to enroll', type: 'error' });
     },
   });
 
   const unenrollMutation = useMutation({
     mutationFn: lecturesApi.unenroll,
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['lectures'] });
+      setMessage({ text: response.message, type: 'success' });
+      setSelectedLecture(null);
+    },
+    onError: (error: any) => {
+      setMessage({ text: error.response?.data?.error || 'Failed to unenroll', type: 'error' });
     },
   });
 
@@ -41,14 +53,12 @@ export const Dashboard: React.FC = () => {
   const handleEnroll = async () => {
     if (selectedLecture) {
       await enrollMutation.mutateAsync(selectedLecture.id);
-      setSelectedLecture(null);
     }
   };
 
   const handleUnenroll = async () => {
     if (selectedLecture) {
       await unenrollMutation.mutateAsync(selectedLecture.id);
-      setSelectedLecture(null);
     }
   };
 
@@ -83,6 +93,14 @@ export const Dashboard: React.FC = () => {
                 isStudent={user?.role === 'student'}
                 isEnrolled={selectedLecture.enrolledStudents.includes(user?.id || '')}
                 isLoading={enrollMutation.isPending || unenrollMutation.isPending}
+            />
+        )}
+
+        {message && (
+            <Toast
+                message={message.text}
+                type={message.type}
+                onClose={() => setMessage(null)}
             />
         )}
       </div>
