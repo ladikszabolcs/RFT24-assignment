@@ -11,15 +11,10 @@ export interface Lecture {
   id: string;
   title: string;
   description: string;
-  teacherId: string;
+  teacher: string;
   startTime: string;
   endTime: string;
   dayOfWeek: number;
   maxStudents: number;
   enrolledStudents: string[];
-}
-
-export interface AuthResponse {
-  user: User;
-  token: string;
 }
