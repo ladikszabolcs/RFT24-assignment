@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addWeeks, subWeeks } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import { CalendarHeader } from '../components/Calendar/CalendarHeader';
 import { WeekView } from '../components/Calendar/WeekView';
 import { LectureModal } from '../components/Lectures/LectureModal';
@@ -9,6 +10,7 @@ import { useAuthStore } from '../store/authStore';
 import type { Lecture } from '../types';
 
 export const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null);
   const user = useAuthStore((state) => state.user);
